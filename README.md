@@ -1,17 +1,17 @@
 # An `Origin` API.
 _Mike West, July 2025_
 
-## **A Problem**
+## A Problem
 
 The [origin](https://html.spec.whatwg.org/multipage/browsers.html#origin) is a fundamental component of the web's implementation, essential to both the security and privacy boundaries which user agents maintain. The concept is well-defined between HTML and URL, along with widely-used adjacent concepts like "site".
 
 Origins, however, are not directly exposed to web developers. Though there are various `origin` getters on various objects, each of those returns the [serialization](https://html.spec.whatwg.org/multipage/browsers.html#ascii-serialisation-of-an-origin) of an origin, not the origin itself. This has a few negative implications. Practically, developers attempting to do same-origin or same-site comparisons when handling serialized origins often get things wrong in ways that lead to vulnerabilities (see [PMForce: Systematically Analyzing postMessage Handlers at Scale](https://swag.cispa.saarland/papers/steffens2020pmforce.pdf) (Steffens and Stock, 2020) as one illuminating study). Philosophically, it seems like a missing security primitive that developers struggle to polyfill accurately.
 
-## **A Proposal**
+## A Proposal
 
 One way of approaching this gap would be to define an `Origin` object which represented the concept, enabling direct same-origin and same-site comparisons. In order to do so, we'd need to define a parser for serialized origins, just as we do for serialized URLs, and it might be helpful to support more complicated comparisons by introducing an `OriginPattern` object as an analog to `URLPattern`.
 
-### **An `Origin` Object**
+### An `Origin` Object
 
 Let's consider a minimal `Origin` object that can be constructed from a string representing a serialized origin, and that offers two methods (`isSameOrigin()` and `isSameSite()`) along with a stringifier named `serialization`:
 
@@ -106,49 +106,57 @@ try {
 
 Really, the only salient distinctions between `OriginPattern` and `URLPattern` are the name (which is important!) and the constructors, which would ignore members of `URLPatternInit` other than `protocol`, `hostname`, and `port`; and throw a `TypeError` for string inputs that contained constraints beyond those three aspects. This should make the implementation fairly trivial, while providing developers more clarity in their usage.
 
-## **Design Considerations**
+## Design Considerations
 
-### **Perhaps we could allow conversion from URLs?**
+### Are origin checks enough?
 
-It's somewhat non-intuitive that an `Origin` representing `https://ümlauted.example` needs to be parsed as `https://xn--mlauted-m2a.example` due to the requirement to serialize IDNs using ASCII. We could simplify this for developers by either loosening our parser to handle things like Punycode in the same way URL does, or allow `Origin` objects to be constructed from `URL` objects (either directly as in `new Origin(url)`, or by introducing a conversion method like `url.toOrigin()`).
+Generally speaking, I think developers need to be able to correctly perform same-origin and same-site checks against origins they come into contact with through a number of existing APIs' `.origin` getters which return serialized strings. Given the difficulty of polyfilling those checks correctly, and the breadth of serialized origins' exposure, this seems like a necessary, but probably not sufficient, addition to the platform.
 
-### **Should we expose the protocol, host, and port?**
+In some contexts, it makes sense to guide developers towards a broader spectrum of data. Handling `postMessage()` is a pretty good example of a situation in which it might make sense for developers to look not only at the incoming message's sender's origin, but also at other aspects of the sender's context. For example, we've gated `SameSite` cookies not only on a match between the sender and recipient origins, but also on the sender's ancestor chain. It might be reasonable to extend `MessageEvent` with some of this data, and it might be valuable to craft an API whose shape forces developers to think more holistically about how they handle incoming requests.
 
-While the `Origin` object would need to hold a protocol, host, and port internally, it doesn't seem initially necessary to expose those on the object. This encourages developers to treat it as a single entity against which comparisons can be made, more clearly matching the underlying boundaries the object represents.
 
-### **What about "same origin-domain" checks?**
+### Perhaps we could allow more direct conversion from URLs?
+
+It's somewhat non-intuitive that an `Origin` representing `https://ümlauted.example` needs to be parsed as `https://xn--mlauted-m2a.example` due to the requirement to serialize IDNs using ASCII. We could simplify this for developers by either loosening our parser to handle things like Punycode in the same way URL does, or allow `Origin` objects to be constructed from `URL` objects (either directly as in `new Origin(url)`, or by introducing a conversion method like `Origin.fromURL()` or `URL.toOrigin()`).
+
+
+### Should we expose the protocol, host, and port?
+
+While the `Origin` object would likely hold a protocol, host, and port internally, it doesn't seem initially necessary to expose those on the object. This encourages developers to treat it as a single entity against which comparisons can be made, more clearly matching the underlying boundaries the object represents.
+
+
+### What about "same origin-domain" checks?
 
 Tuple origins are indeed a tuple consisting of scheme, host, port, and domain. If developers choose to use `document.domain`, then it might be possible to produce two `Origin` objects which would be "[same origin](https://html.spec.whatwg.org/multipage/browsers.html#same-origin)" but not "[same origin-domain](https://html.spec.whatwg.org/multipage/browsers.html#same-origin-domain)".
 
 Insofar as we've done our best to collectively deprecate `document.domain`, and we've chosen to elide the domain from the origin's serialization today, I'd be perfectly happy omitting support for this check from the set we offer to developers. Still, probably worth considering this as an issue to explicitly decide upon.
 
-### **What about "schemelessly same site" checks?**
+
+### What about "schemelessly same site" checks?
 
 Likewise, I'd be perfectly comfortable omitting [schemelessly same site](https://html.spec.whatwg.org/multipage/browsers.html#schemelessly-same-site) checks from the `Origin` object directly, though it's likely a reasonable thing to support via an explicitly-created `OriginPattern` (e.g. `new OriginPattern("*://example.site:*")`).
 
 The [`URLHost` proposal](https://github.com/whatwg/url/pull/288) could also support this kind of check, perhaps even more straightforwardly.
 
-### **Are origin checks enough?**
 
-Given the beyond-origin boundaries we're creating with partitioning schemes and ancestor checks and etc, it might be reasonable to expose additional context in places where we expect developers to make security or privacy decisions about a given interaction. `MessageEvent`, for instance, might need to grow some additional attributes to describe whether a message's same-origin sender was embedded in a same-site or cross-site document, for the same reasons we rely on that distinction when deciding whether or not to include `SameSite` cookies.
-
-Making it trivially possible to correctly perform same-origin and same-site checks should be considered a necessary, but probably not sufficient, capability.
-
-### **What about non-standard origin schemes certain UAs support?**
+### What about non-standard origin schemes certain UAs support?
 
 User agents have minted a number of protocol-specific origin rules to support a variety of things (`chrome-extension`, `moz-extension`, `safari-web-extension`, etc) that violate the [origin of a URL](https://url.spec.whatwg.org/#concept-url-origin) steps by supporting non-opaque origins. It likely makes sense to shift the URL standard a bit to make room for these willful violations.
 
-### **Can we ship a global named `Origin`?**
+
+### Can we ship a global named `Origin`?
 
 Idunno. Let's find out if it's already been widely stomped upon? If not, surely we can come up with some creative alternative.
 
-### **What about existing `.origin` getters?**
+
+### What about existing `.origin` getters?
 
 It seems ideal to me for us to find ways to vend `Origin` objects rather than serialized origins whenever possible. It would likely be difficult to change the types of existing `.origin` attributes (though some use cases might be solved through the magic of stringification) though, and could create some confusing situations if older APIs rely on serialized origins while newer APIs vend `Origin` objects.
 
 Still, working with `Origin` objects would make it possible to reason about opaque origins in ways which are impossible today. Since every opaque origin serializes as `"null"`, it's quite difficult to distinguish one from the other. While it would be nice to [mitigate that underlying issue](https://github.com/whatwg/html/issues/3585), opaque `Origin` objects the browser minted would at least allow for `isSameOrigin()` comparisons that developers could use to establish a sender's consistency over time.
 
-### **What would this look like in IDL?**
+
+### What would this look like in IDL?
 
 Maybe something like the following:
 
