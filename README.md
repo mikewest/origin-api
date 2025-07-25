@@ -106,7 +106,7 @@ try {
 
 Really, the only salient distinctions between `OriginPattern` and `URLPattern` are the name (which is important!) and the constructors, which would ignore members of `URLPatternInit` other than `protocol`, `hostname`, and `port`; and throw a `TypeError` for string inputs that contained constraints beyond those three aspects. This should make the implementation fairly trivial, while providing developers more clarity in their usage.
 
-## **FAQ**
+## **Design Considerations**
 
 ### **Perhaps we could allow conversion from URLs?**
 
