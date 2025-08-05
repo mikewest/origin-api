@@ -152,7 +152,7 @@ Security Considerations {#security}
 =======================
 
 The {{Origin/isSameSite(other)}} method exposes each particular user agent's understanding of an
-[=origin=]'s [=origin/site=]. As this understanding generally depends on a specific snapshot of
+[=origin=]'s [=site=]. As this understanding generally depends on a specific snapshot of
 the Public Suffix List [[PSL]], the deliniation of a [=site=] can and does differ between user
 agents, and even between versions of one user agent. Developers are encouraged to exercise caution
 when making decisions based on [=sites=], and are likewise encouraged to rely upon
