@@ -1,0 +1,159 @@
+<pre class='metadata'>
+Title: The Origin API
+Shortname: origin-api
+Level: None
+Status: w3c/UD
+Repository: mikewest/origin-api
+URL: https://mikewest.github.io/origin-api
+Editor: Mike West, Google https://google.com, mkwst@google.com
+Abstract: An `Origin` object might be nice to have.
+Markup Shorthands: markdown yes, css no
+Complain About: accidental-2119 yes, missing-example-ids yes
+Assume Explicit For: yes
+Die On: warning
+</pre>
+
+Introduction {#intro}
+============
+
+The [=/origin=] is a fundamental component of the web's implementation, essential to both the security and privacy boundaries which user agents maintain. The concept is well-defined between HTML and URL, along with widely-used adjacent concepts like "[=/site=]".
+
+Origins, however, are not directly exposed to web developers. Though there are various `origin` getters on various objects, each of those returns the [=ASCII serialization of an origin=], not the origin itself. This has a few negative implications. Practically, developers attempting to do same-origin or same-site comparisons when handling serialized origins often get things wrong in ways that lead to vulnerabilities (see [PMForce: Systematically Analyzing postMessage Handlers at Scale](https://swag.cispa.saarland/papers/steffens2020pmforce.pdf) (Steffens and Stock, 2020) as one illuminating study). Philosophically, it seems like a missing security primitive that developers struggle to polyfill accurately.
+
+We can address this gap in the platform by introducing an `Origin` object that encapsulates the origin concept, and provides helpful methods for comparison, serialization, parsing, and etc.
+
+The `Origin` Object {#api}
+===================
+
+<pre class="idl">
+[Exposed=*]
+interface Origin {
+  constructor();
+  constructor(USVString serializedOrigin);
+
+  static Origin? parse(USVString serializedOrigin);
+  static Origin? fromURL(USVString serializedURL);
+
+  readonly attribute boolean opaque;
+
+  boolean isSameOrigin(Origin other);
+  boolean isSameSite(Origin other);
+
+  stringifier USVString toJSON();
+};
+</pre>
+
+An {{Origin}} object has an <dfn for="Origin" attribute>`[[origin]]`</dfn> internal slot, which
+holds an [=origin=].
+
+<div algorithm="new Origin()">
+The <dfn for="Origin" constructor lt="Origin()">`new URL()`</dfn> constructor steps are:
+
+1.  Set [=this=]'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
+
+</div><!-- new Origin() -->
+
+<div algorithm="new Origin(serializedOrigin)">
+The <dfn for="Origin" constructor lt="Origin(serializedOrigin)">`new URL(serializedOrigin)`</dfn>
+constructor accepts a {{USVString}} |serializedOrigin| which contains the [=ASCII serialization of an
+origin=]. If |serializedOrigin| is not a valid serialization, the constructor will throw a
+{{TypeError}}. Otherwise, the constructed object will hold the deserialized [=origin=]:
+
+1.  If |serializedOrigin| is "`null`":
+
+    1.  Set [=this=]'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
+    2.  Return.
+
+2.  Let |origin as url| be the result of executing the [=basic URL parser=] on |serializedOrigin|.
+
+3.  If |origin as url| is failure, throw a "{{TypeError}}" {{DOMException}}.
+
+4.  If |origin as url|'s [=url/origin=]'s [=ASCII serialization of an origin|serialization=] is
+    not |serializedOrigin|, throw a "{{TypeError}}" {{DOMException}}.
+
+5.  Set [=this=]'s {{Origin/[[origin]]}} to |origin as url|'s [=url/origin=].
+
+Note: The algorithm above parses |serializedOrigin| as a URL, then compares it against the
+serialization of that URL's origin. This seems like the cheapest way to reuse all the infrastructure
+in [[URL]], while still ensuring that we require a validly serialized origin. It would of course be
+possible to extract a strict origin parser from the algorithms in URL, but it seems at least
+somewhat likely that they might drift apart at some point in the future. Reusing the existing
+algorithms, then checking the result for correctness, seems robust and straightforward enough to
+rely upon.
+</div><!-- new Origin(serializedOrigin) -->
+
+<div algorithm="parse(serializedOrigin)">
+Like {{Origin}}'s {{Origin/Origin(serializedOrigin)}} constructor, the static
+<dfn for="Origin" method lt="parse(serializedOrigin)">`parse(serializedOrigin)`</dfn> method
+accepts a {{USVString}} |serializedOrigin| which contains the [=ASCII serialization of an
+origin=]. If |serializedOrigin| is not a valid serialization, the method will return `null`.
+Otherwise, it will return a newly-constructed {{Origin}} holding the deserialized [=origin=]:
+
+1.  Let |origin| be a new {{Origin}} object.
+
+2.  If |serializedOrigin| is "`null`":
+
+    1.  Set |origin|'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
+
+    2.  Return |origin|.
+
+3.  Let |origin as url| be the result of executing the [=basic URL parser=] on |serializedOrigin|.
+
+4.  If |origin as url| is failure, return `null`.
+
+5.  If |origin as url|'s [=url/origin=]'s [=ASCII serialization of an origin|serialization=] is
+    not |serializedOrigin|, return `null`.
+
+6.  Set |origin|'s {{Origin/[[origin]]}} to |origin as url|'s [=url/origin=].
+
+7.  Return |origin|.
+
+</div><!-- parse(serializedOrigin) -->
+
+<div algorithm="fromURL(serializedURL)">
+The static <dfn for="Origin" method lt="fromURL(serializedURL)">`fromURL(serializedURL)`</dfn>
+method accepts a {{USVString}} |serializedURL| which contains the [=URL serializer|serialization=]
+of a [=URL=]. If |serializedURL| is not a valid serialization, the method will return `null`.
+Otherwise, it will return a newly-constructed {{Origin}} object holding the deserialized [=URL=]'s
+[=url/origin=]:
+
+1.  Let |parsed url| be the result of running the [=basic URL parser=] on |serializedURL|.
+
+2.  If |parsed url| is failure, return `null`.
+
+3.  Let |origin| be a new {{Origin}} object.
+
+4.  Set |origin|'s {{Origin/[[origin]]}} to |parsed url|'s [=url/origin=].
+
+Note: Unlike {{URL/parse(url)|URL.parse}}, this method does not accept a base, but expects the
+complete serialization of a URL. That seems clearer, and guides developers towards constructing
+a {{URL}} object in some well-understood way that's distinct from their work with {{Origin}}.
+</div><!-- fromURL(serializedURL) -->
+
+The <dfn for="Origin" attribute>`opaque`</dfn> attribute getter steps are to return `true`
+if [=this=]'s {{Origin/[[origin]]}} is an [=opaque origin=], and `false` otherwise.
+
+The <dfn for="Origin" method>`isSameOrigin(other)`</dfn> method steps are to return `true`
+if [=this=]'s {{Origin/[[origin]]}} is [=same origin=] with <var ignore>other</var>'s
+{{Origin/[[origin]]}}, and `false` otherwise.
+
+<div algorithm="isSameSite(other)">
+The <dfn for="Origin" method>`isSameSite(other)`</dfn> method steps are to return `true`
+if [=this=]'s {{Origin/[[origin]]}} is [=same site=] with <var ignore>other</var>'s
+{{Origin/[[origin]]}}, and `false` otherwise.
+
+Note: This is a [=same site=], not [=schemelessly same site=], comparison.
+</div><!-- isSameSite(other) -->
+
+The <dfn for="Origin" stringifier>`toJSON()`</dfn> method steps are to return the
+[=ASCII serialization of an origin|serialization=] of [=this=]'s {{Origin/[[origin]]}}.
+
+Security Considerations {#security}
+=======================
+
+The {{Origin/isSameSite(other)}} method exposes each particular user agent's understanding of an
+[=origin=]'s [=origin/site=]. As this understanding generally depends on a specific snapshot of
+the Public Suffix List [[PSL]], the deliniation of a [=site=] can and does differ between user
+agents, and even between versions of one user agent. Developers are encouraged to exercise caution
+when making decisions based on [=sites=], and are likewise encouraged to rely upon
+{{Origin/isSameOrigin(other)}} when making security decisions.
