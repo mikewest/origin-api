@@ -8,7 +8,7 @@
   <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://mikewest.github.io/origin-api" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="ad88a72edab21417085ad9163ea2bb6cca7e8fc9" name="revision">
+  <meta content="b5a2941e3af40b655f8a82fd1d882e1e1bdee1f3" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="p-name no-ref" id="title">The Origin API</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#UD">Unofficial Proposal Draft</a>,
-    <time class="dt-updated" datetime="2025-08-05">5 August 2025</time></p>
+    <time class="dt-updated" datetime="2025-08-07">7 August 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -752,6 +752,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
       <dd><a class="u-url" href="https://mikewest.github.io/origin-api">https://mikewest.github.io/origin-api</a>
       <dt>Issue Tracking:
       <dd><a href="https://github.com/mikewest/origin-api/issues/">GitHub</a>
+      <dd><a href="#issues-index">Inline In Spec</a>
       <dt class="editor">Editor:
       <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:mkwst@google.com">Mike West</a> (<a class="p-org org" href="https://google.com">Google</a>)
      </dl>
@@ -795,6 +796,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
       <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
+    <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
@@ -803,6 +805,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
    <p>Origins, however, are not directly exposed to web developers. Though there are various <code>origin</code> getters on various objects, each of those returns the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#ascii-serialisation-of-an-origin" id="ref-for-ascii-serialisation-of-an-origin">ASCII serialization of an origin</a>, not the origin itself. This has a few negative implications. Practically, developers attempting to do same-origin or same-site comparisons when handling serialized origins often get things wrong in ways that lead to vulnerabilities (see <a href="https://swag.cispa.saarland/papers/steffens2020pmforce.pdf">PMForce: Systematically Analyzing postMessage Handlers at Scale</a> (Steffens and Stock, 2020) as one illuminating study). Philosophically, it seems like a missing security primitive that developers struggle to polyfill accurately.</p>
    <p>We can address this gap in the platform by introducing an <code>Origin</code> object that encapsulates the origin concept, and provides helpful methods for comparison, serialization, parsing, and etc.</p>
    <h2 class="heading settled" data-level="2" id="api"><span class="secno">2. </span><span class="content">The <code>Origin</code> Object</span><a class="self-link" href="#api"></a></h2>
+   <p class="issue" id="issue-fad2761c"><a class="self-link" href="#issue-fad2761c"></a> This section is probably best read as a patch to HTML, adding a new subsection to <a href="https://html.spec.whatwg.org/multipage/browsers.html#origin">7.1.1 Origins</a>. If there’s support for the idea, we should turn it into a PR rather than a standalone document. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a></p>
 <pre class="idl highlight def">[Exposed=*]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="origin"><code><c- g>Origin</c-></code></dfn> {
   <a class="idl-code" data-link-type="constructor" href="#dom-origin-origin" id="ref-for-dom-origin-origin"><c- g>constructor</c-></a>();
@@ -1067,6 +1070,10 @@ when making decisions based on <a data-link-type="dfn" href="https://html.spec.w
 };
 
 </pre>
+  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <div style="counter-reset:issue">
+   <div class="issue"> This section is probably best read as a patch to HTML, adding a new subsection to <a href="https://html.spec.whatwg.org/multipage/browsers.html#origin">7.1.1 Origins</a>. If there’s support for the idea, we should turn it into a PR rather than a standalone document. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a> <a class="issue-return" href="#issue-fad2761c" title="Jump to section">↵</a></div>
+  </div>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
 function query(sel) { return document.querySelector(sel); }
