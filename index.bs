@@ -25,6 +25,8 @@ We can address this gap in the platform by introducing an `Origin` object that e
 The `Origin` Object {#api}
 ===================
 
+ISSUE(whatwg/html#11534): This section is probably best read as a patch to HTML, adding a new subsection to [7.1.1 Origins](https://html.spec.whatwg.org/multipage/browsers.html#origin). If there's support for the idea, we should turn it into a PR rather than a standalone document.
+
 <pre class="idl">
 [Exposed=*]
 interface Origin {
