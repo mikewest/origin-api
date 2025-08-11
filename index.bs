@@ -49,14 +49,14 @@ An {{Origin}} object has an <dfn for="Origin" attribute>`[[origin]]`</dfn> inter
 holds an [=origin=].
 
 <div algorithm="new Origin()">
-The <dfn for="Origin" constructor lt="Origin()">`new URL()`</dfn> constructor steps are:
+The <dfn for="Origin" constructor lt="Origin()">`new Origin()`</dfn> constructor steps are:
 
 1.  Set [=this=]'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
 
 </div><!-- new Origin() -->
 
 <div algorithm="new Origin(serializedOrigin)">
-The <dfn for="Origin" constructor lt="Origin(serializedOrigin)">`new URL(serializedOrigin)`</dfn>
+The <dfn for="Origin" constructor lt="Origin(serializedOrigin)">`new Origin(serializedOrigin)`</dfn>
 constructor accepts a {{USVString}} |serializedOrigin| which contains the [=ASCII serialization of an
 origin=]. If |serializedOrigin| is not a valid serialization, the constructor will throw a
 {{TypeError}}. Otherwise, the constructed object will hold the deserialized [=origin=]:
