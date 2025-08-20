@@ -159,3 +159,13 @@ the Public Suffix List [[PSL]], the deliniation of a [=site=] can and does diffe
 agents, and even between versions of one user agent. Developers are encouraged to exercise caution
 when making decisions based on [=sites=], and are likewise encouraged to rely upon
 {{Origin/isSameOrigin(other)}} when making security decisions.
+
+
+Privacy Considerations {#privacy}
+======================
+
+The Public Suffix List [[PSL]] changes over time, and will likely be different from browser to
+browser and from one version of one browser to another. While the list is likely strongly
+correllated to a specific version of a user agent, exposing the list via {{Origin/isSameSite()}}
+could leak some information in cases where the user agent desires to limit its brand's or
+version's visibility.
