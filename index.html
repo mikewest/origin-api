@@ -8,7 +8,7 @@
   <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://mikewest.github.io/origin-api" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="95920c2acbf98c5410e93a31c7230c2486e548c7" name="revision">
+  <meta content="865e7203eddb362004db5692e95eb47133f916ee" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="p-name no-ref" id="title">The Origin API</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#UD">Unofficial Proposal Draft</a>,
-    <time class="dt-updated" datetime="2025-08-11">11 August 2025</time></p>
+    <time class="dt-updated" datetime="2025-08-20">20 August 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -778,6 +778,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
     <li><a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
     <li><a href="#api"><span class="secno">2</span> <span class="content">The <code>Origin</code> Object</span></a>
     <li><a href="#security"><span class="secno">3</span> <span class="content">Security Considerations</span></a>
+    <li><a href="#privacy"><span class="secno">4</span> <span class="content">Privacy Considerations</span></a>
     <li>
      <a href="#w3c-conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ol class="toc">
@@ -946,6 +947,12 @@ the Public Suffix List <a data-link-type="biblio" href="#biblio-psl" title="Publ
 agents, and even between versions of one user agent. Developers are encouraged to exercise caution
 when making decisions based on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#site" id="ref-for-site③">sites</a>, and are likewise encouraged to rely upon
 <code class="idl"><a data-link-type="idl" href="#dom-origin-issameorigin" id="ref-for-dom-origin-issameorigin①">isSameOrigin(other)</a></code> when making security decisions.</p>
+   <h2 class="heading settled" data-level="4" id="privacy"><span class="secno">4. </span><span class="content">Privacy Considerations</span><a class="self-link" href="#privacy"></a></h2>
+   <p>The Public Suffix List <a data-link-type="biblio" href="#biblio-psl" title="Public Suffix List">[PSL]</a> changes over time, and will likely be different from browser to
+browser and from one version of one browser to another. While the list is likely strongly
+correllated to a specific version of a user agent, exposing the list via <code class="idl"><a data-link-type="idl" href="#dom-origin-issamesite" id="ref-for-dom-origin-issamesite②">isSameSite()</a></code>
+could leak some information in cases where the user agent desires to limit its brand’s or
+version’s visibility.</p>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
@@ -1293,7 +1300,7 @@ let dfnPanelData = {
 "dom-origin-fromurl-serializedurl-serializedurl": {"dfnID":"dom-origin-fromurl-serializedurl-serializedurl","dfnText":"serializedURL","external":false,"refSections":[],"url":"#dom-origin-fromurl-serializedurl-serializedurl"},
 "dom-origin-issameorigin": {"dfnID":"dom-origin-issameorigin","dfnText":"isSameOrigin(other)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-issameorigin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dom-origin-issameorigin\u2460"}],"title":"3. Security Considerations"}],"url":"#dom-origin-issameorigin"},
 "dom-origin-issameorigin-other-other": {"dfnID":"dom-origin-issameorigin-other-other","dfnText":"other","external":false,"refSections":[],"url":"#dom-origin-issameorigin-other-other"},
-"dom-origin-issamesite": {"dfnID":"dom-origin-issamesite","dfnText":"isSameSite(other)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-issamesite"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dom-origin-issamesite\u2460"}],"title":"3. Security Considerations"}],"url":"#dom-origin-issamesite"},
+"dom-origin-issamesite": {"dfnID":"dom-origin-issamesite","dfnText":"isSameSite(other)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-issamesite"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dom-origin-issamesite\u2460"}],"title":"3. Security Considerations"},{"refs":[{"id":"ref-for-dom-origin-issamesite\u2461"}],"title":"4. Privacy Considerations"}],"url":"#dom-origin-issamesite"},
 "dom-origin-issamesite-other-other": {"dfnID":"dom-origin-issamesite-other-other","dfnText":"other","external":false,"refSections":[],"url":"#dom-origin-issamesite-other-other"},
 "dom-origin-opaque": {"dfnID":"dom-origin-opaque","dfnText":"opaque","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-opaque"}],"title":"2. The Origin Object"}],"url":"#dom-origin-opaque"},
 "dom-origin-origin": {"dfnID":"dom-origin-origin","dfnText":"new Origin()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-origin"}],"title":"2. The Origin Object"}],"url":"#dom-origin-origin"},
