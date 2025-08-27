@@ -13,7 +13,7 @@ One way of approaching this gap would be to define an `Origin` object which repr
 
 ### An `Origin` Object
 
-Let's consider a minimal `Origin` object that can be constructed from a string representing a serialized origin, and that offers two methods (`isSameOrigin()` and `isSameSite()`) along with a stringifier named `serialization`:
+Let's consider a minimal `Origin` object that can be constructed from a string representing a serialized origin, and that offers two methods (`isSameOrigin()` and `isSameSite()`) along with a stringifier named `toJSON()`:
 
 ```javascript
 // Tuple Origins
