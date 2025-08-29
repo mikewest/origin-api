@@ -153,8 +153,17 @@ Idunno. Let's find out if it's already been widely stomped upon? If not, surely 
 
 It seems ideal to me for us to find ways to vend `Origin` objects rather than serialized origins whenever possible. It would likely be difficult to change the types of existing `.origin` attributes (though some use cases might be solved through the magic of stringification) though, and could create some confusing situations if older APIs rely on serialized origins while newer APIs vend `Origin` objects.
 
-Still, working with `Origin` objects would make it possible to reason about opaque origins in ways which are impossible today. Since every opaque origin serializes as `"null"`, it's quite difficult to distinguish one from the other. While it would be nice to [mitigate that underlying issue](https://github.com/whatwg/html/issues/3585), opaque `Origin` objects the browser minted would at least allow for `isSameOrigin()` comparisons that developers could use to establish a sender's consistency over time.
+Still, working with `Origin` objects would make it possible to reason about opaque origins in ways which are impossible today. Since every opaque origin serializes as `"null"`, it's quite difficult to distinguish one from the other. While it would be nice to [mitigate that underlying issue](https://github.com/whatwg/html/issues/3585), opaque `Origin` objects the browser minted would at least allow for `isSameOrigin()` comparisons that developers could use to establish a sender's consistency over time, and more clarity around `postMessage()` targeting.
 
+### What's this about opaque origins?
+
+[Opaque origins](https://html.spec.whatwg.org/#concept-origin-opaque) are unique, matching no origin but themselves. Developers come across them frequently due either to loading resources that themselves have an opaque origin (e.g. `file:` or `data:` resources), or loading resources in a context that forces them into an opaque origin (e.g. `<iframe sandbox>` or `Content-Security-Policy: sandbox`).
+
+For better or worse, these opaque origins serialize lossily to the same string, "`null`". So, while two distinct `<iframe sandbox></iframe>`s in a given document would have _distinct_ opaque origins, messages from those frames would both have a `MessageEvent.origin` of "`null`", which is unfortunate. Likewise, a single `<iframe sandbox></iframe>` that's navigated between messages would be impossible to identify from the origin serialization alone.
+
+This (along with other esoteric properties of sandboxing) can lead to some unexpected interactions when performing origin checks, as demonstrated in a recent [CTF challenge](https://so-xss.terjanq.me/) ([writeup](https://github.com/terjanq/same-origin-xss#soxss---writeup)). Though the origins at play were in fact distinct, "`null`" unfortunately is strictly equal to "`null`". The origin confusion relied upon in that demonstration would have been handled correctly if `window.origin.isSameOrigin(event.origin)` had been available.
+
+Likewise, enhancing `postMessage()` so that it would be possible to target messages to opaque origins with something other than "`*`". This could help developers ensure their target's consistency over time, for example by storing an incoming `MessageEvent.origin`, and using it rather than a string to target the `postMessage()`.
 
 ### What would this look like in IDL?
 
