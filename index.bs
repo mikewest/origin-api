@@ -40,8 +40,6 @@ interface Origin {
 
   boolean isSameOrigin(Origin other);
   boolean isSameSite(Origin other);
-
-  stringifier USVString toJSON();
 };
 </pre>
 
@@ -147,8 +145,6 @@ if [=this=]'s {{Origin/[[origin]]}} is [=same site=] with <var ignore>other</var
 Note: This is a [=same site=], not [=schemelessly same site=], comparison.
 </div><!-- isSameSite(other) -->
 
-The <dfn for="Origin" stringifier>`toJSON()`</dfn> method steps are to return the
-[=ASCII serialization of an origin|serialization=] of [=this=]'s {{Origin/[[origin]]}}.
 
 Security Considerations {#security}
 =======================

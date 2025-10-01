@@ -13,7 +13,7 @@ One way of approaching this gap would be to define an `Origin` object which repr
 
 ### An `Origin` Object
 
-Let's consider a minimal `Origin` object that can be constructed from a string representing a serialized origin, and that offers two methods (`isSameOrigin()` and `isSameSite()`) along with a stringifier named `toJSON()`:
+Let's consider a minimal `Origin` object that can be constructed from a string representing a serialized origin, and that offers two methods (`isSameOrigin()` and `isSameSite()`).
 
 ```javascript
 // Tuple Origins
@@ -151,7 +151,7 @@ Idunno. Let's find out if it's already been widely stomped upon? If not, surely 
 
 ### What about existing `.origin` getters?
 
-It seems ideal to me for us to find ways to vend `Origin` objects rather than serialized origins whenever possible. It would likely be difficult to change the types of existing `.origin` attributes (though some use cases might be solved through the magic of stringification) though, and could create some confusing situations if older APIs rely on serialized origins while newer APIs vend `Origin` objects.
+It seems ideal to me for us to find ways to vend `Origin` objects rather than serialized origins whenever possible. It would likely be difficult to change the types of existing `.origin` attributes (though some use cases could be solved through the magic of stringification if we added it) though, and could create some confusing situations if older APIs rely on serialized origins while newer APIs vend `Origin` objects.
 
 Still, working with `Origin` objects would make it possible to reason about opaque origins in ways which are impossible today. Since every opaque origin serializes as `"null"`, it's quite difficult to distinguish one from the other. While it would be nice to [mitigate that underlying issue](https://github.com/whatwg/html/issues/3585), opaque `Origin` objects the browser minted would at least allow for `isSameOrigin()` comparisons that developers could use to establish a sender's consistency over time, and more clarity around `postMessage()` targeting.
 
@@ -180,8 +180,6 @@ interface Origin {
 
   static Origin? parse(USVString serializedOrigin);
   static Origin? fromURL(USVString serializedURL);
-
-  stringifier USVString toJSON();
 
   boolean isSameOrigin(Origin other);
   boolean isSameSite(Origin other);
