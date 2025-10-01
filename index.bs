@@ -55,13 +55,31 @@ The <dfn for="Origin" constructor lt="Origin()">`new Origin()`</dfn> constructor
 <div algorithm="from(value)">
 The static <dfn for="Origin" method lt="from(value)">`from(value)`</dfn> accepts 
 method accepts an arbitrary object |value|, and either returns a newly-constructed `Origin`
-object if one can be extracted from |value|, or `null` otherwise:
+object if one can be extracted from |value|, or throws a `TypeError` otherwise:
 
-1.  Let |origin| be the result of executing |value|'s [$extract an origin$] algorithm.
+1.  If |value| is a [=platform object=]:
 
-2.  If |origin| is `null`, return `null`.
+    1.  Let |origin| be the result of executing |value|'s [$extract an origin$] algorithm.
+    
+    2.  If |origin| is not `null`, then return a new {{Origin}} object whose {{Origin/[[origin]]}}
+        is set to |origin|.
 
-3.  Return a new {{Origin}} object whose {{Origin/[[origin]]}} is set to |origin|.
+2.  If |value| is a [=string=]:
+
+    1.  Let |parsed url| be the result of running the [=basic URL parser=] on |value|.
+
+    2.  If |parsed url| is not failure, then return a new {{Origin}} object whose
+        {{Origin/[[origin]]}} is set to |parsed url|'s [=url/origin=].
+
+    Note: Unlike {{URL/parse(url)|URL.parse}}, `Origin.from(String)` doesn't accept a base, but
+    requires the serialization of an absolute URL. That seems clearer, and guides developers
+    towards constructing a {{URL}} object in some well-understood way that's distinct from their
+    work with {{Origin}}.
+    
+3.  Throw a {{TypeError}}.
+
+    Note: We fall through to throwing a `TypeError` here if we fail to extract an origin from a
+    given platform object or string.
 
 </div><!-- from(value) -->
 
@@ -155,25 +173,6 @@ runs the following steps:
 1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
 
 </div><!-- MessageEvent -->
-
-
-### `String` ### {#extraction-String}
-
-<div algorithm="extract an origin String">
-A {{String}} |serializedURL|'s [$extract an origin$] operation runs the following steps:
-
-1.  Let |parsed url| be the result of running the [=basic URL parser=] on |serializedURL|.
-
-2.  If |parsed url| is failure, return `null`.
-
-3.  Let |origin| be a new {{Origin}} object.
-
-4.  Set |origin|'s {{Origin/[[origin]]}} to |parsed url|'s [=url/origin=].
-
-Note: Unlike {{URL/parse(url)|URL.parse}}, this method does not accept a base, but expects the
-complete serialization of a URL. That seems clearer, and guides developers towards constructing
-a {{URL}} object in some well-understood way that's distinct from their work with {{Origin}}.
-</div><!-- String -->
 
 
 Security Considerations {#security}
