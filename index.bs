@@ -148,7 +148,14 @@ security checks here.
 An object implementing the {{WindowOrWorkerGlobalScope}} mixin's [$extract an origin$] operation
 runs the following steps:
 
-1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
+1.   If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] is not
+     [=same origin-domain=] with the <a dfn spec=HTML>entry settings object</a>'s
+     [=environment settings object/origin=], then return `null`.
+
+2.   Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
+
+Note: As `WindowProxy` objects are potentially accessible cross-origin, we need to perform a
+security check here before granting access to the global scope's `origin`.
 
 </div><!-- WindowOrWorkerGlobalScope -->
 
