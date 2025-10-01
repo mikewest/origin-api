@@ -31,10 +31,8 @@ ISSUE(whatwg/html#11534): This section is probably best read as a patch to HTML,
 [Exposed=*]
 interface Origin {
   constructor();
-  constructor(USVString serializedOrigin);
 
-  static Origin? parse(USVString serializedOrigin);
-  static Origin? fromURL(USVString serializedURL);
+  static Origin? from(any value);
 
   readonly attribute boolean opaque;
 
@@ -53,82 +51,20 @@ The <dfn for="Origin" constructor lt="Origin()">`new Origin()`</dfn> constructor
 
 </div><!-- new Origin() -->
 
-<div algorithm="new Origin(serializedOrigin)">
-The <dfn for="Origin" constructor lt="Origin(serializedOrigin)">`new Origin(serializedOrigin)`</dfn>
-constructor accepts a {{USVString}} |serializedOrigin| which contains the [=ASCII serialization of an
-origin=]. If |serializedOrigin| is not a valid serialization, the constructor will throw a
-{{TypeError}}. Otherwise, the constructed object will hold the deserialized [=origin=]:
 
-1.  If |serializedOrigin| is "`null`":
+<div algorithm="from(value)">
+The static <dfn for="Origin" method lt="from(value)">`from(value)`</dfn> accepts 
+method accepts an arbitrary object |value|, and either returns a newly-constructed `Origin`
+object if one can be extracted from |value|, or `null` otherwise:
 
-    1.  Set [=this=]'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
-    2.  Return.
+1.  Let |origin| be the result of executing |value|'s [$extract an origin$] algorithm.
 
-2.  Let |origin as url| be the result of executing the [=basic URL parser=] on |serializedOrigin|.
+2.  If |origin| is `null`, return `null`.
 
-3.  If |origin as url| is failure, throw a "{{TypeError}}" {{DOMException}}.
+3.  Return a new {{Origin}} object whose {{Origin/[[origin]]}} is set to |origin|.
 
-4.  If |origin as url|'s [=url/origin=]'s [=ASCII serialization of an origin|serialization=] is
-    not |serializedOrigin|, throw a "{{TypeError}}" {{DOMException}}.
+</div><!-- from(value) -->
 
-5.  Set [=this=]'s {{Origin/[[origin]]}} to |origin as url|'s [=url/origin=].
-
-Note: The algorithm above parses |serializedOrigin| as a URL, then compares it against the
-serialization of that URL's origin. This seems like the cheapest way to reuse all the infrastructure
-in [[URL]], while still ensuring that we require a validly serialized origin. It would of course be
-possible to extract a strict origin parser from the algorithms in URL, but it seems at least
-somewhat likely that they might drift apart at some point in the future. Reusing the existing
-algorithms, then checking the result for correctness, seems robust and straightforward enough to
-rely upon.
-</div><!-- new Origin(serializedOrigin) -->
-
-<div algorithm="parse(serializedOrigin)">
-Like {{Origin}}'s {{Origin/Origin(serializedOrigin)}} constructor, the static
-<dfn for="Origin" method lt="parse(serializedOrigin)">`parse(serializedOrigin)`</dfn> method
-accepts a {{USVString}} |serializedOrigin| which contains the [=ASCII serialization of an
-origin=]. If |serializedOrigin| is not a valid serialization, the method will return `null`.
-Otherwise, it will return a newly-constructed {{Origin}} holding the deserialized [=origin=]:
-
-1.  Let |origin| be a new {{Origin}} object.
-
-2.  If |serializedOrigin| is "`null`":
-
-    1.  Set |origin|'s {{Origin/[[origin]]}} to a unique [=/opaque origin=].
-
-    2.  Return |origin|.
-
-3.  Let |origin as url| be the result of executing the [=basic URL parser=] on |serializedOrigin|.
-
-4.  If |origin as url| is failure, return `null`.
-
-5.  If |origin as url|'s [=url/origin=]'s [=ASCII serialization of an origin|serialization=] is
-    not |serializedOrigin|, return `null`.
-
-6.  Set |origin|'s {{Origin/[[origin]]}} to |origin as url|'s [=url/origin=].
-
-7.  Return |origin|.
-
-</div><!-- parse(serializedOrigin) -->
-
-<div algorithm="fromURL(serializedURL)">
-The static <dfn for="Origin" method lt="fromURL(serializedURL)">`fromURL(serializedURL)`</dfn>
-method accepts a {{USVString}} |serializedURL| which contains the [=URL serializer|serialization=]
-of a [=URL=]. If |serializedURL| is not a valid serialization, the method will return `null`.
-Otherwise, it will return a newly-constructed {{Origin}} object holding the deserialized [=URL=]'s
-[=url/origin=]:
-
-1.  Let |parsed url| be the result of running the [=basic URL parser=] on |serializedURL|.
-
-2.  If |parsed url| is failure, return `null`.
-
-3.  Let |origin| be a new {{Origin}} object.
-
-4.  Set |origin|'s {{Origin/[[origin]]}} to |parsed url|'s [=url/origin=].
-
-Note: Unlike {{URL/parse(url)|URL.parse}}, this method does not accept a base, but expects the
-complete serialization of a URL. That seems clearer, and guides developers towards constructing
-a {{URL}} object in some well-understood way that's distinct from their work with {{Origin}}.
-</div><!-- fromURL(serializedURL) -->
 
 The <dfn for="Origin" attribute>`opaque`</dfn> attribute getter steps are to return `true`
 if [=this=]'s {{Origin/[[origin]]}} is an [=opaque origin=], and `false` otherwise.
@@ -144,6 +80,100 @@ if [=this=]'s {{Origin/[[origin]]}} is [=same site=] with <var ignore>other</var
 
 Note: This is a [=same site=], not [=schemelessly same site=], comparison.
 </div><!-- isSameSite(other) -->
+
+
+Origin Extraction {#extraction}
+-----------------
+
+[=Platform objects=] have an <dfn abstract-op>extract an origin</dfn> operation which returns
+`null` unless otherwise specified.
+
+ISSUE(whatwg/html#11534): The following implementations should be colocated with their
+definitions in HTML.
+
+
+### `HTMLHyperlinkElementUtils` ### {#extraction-HTMLHyperlinkElementUtils}
+
+<div algorithm="extract an origin HTMLHyperlinkElementUtils">
+An object implementing the {{HTMLHyperlinkElementUtils}} mixin's [$extract an origin$] operation
+runs the following steps:
+
+1.  If [=this=]'s `url` is `null`, return `null`.
+
+2.  Return [=this=]'s `url`'s [=url/origin=].
+
+</div><!-- HTMLHyperlinkElementUtils -->
+
+
+### `Location` ### {#extraction-Location}
+
+<div algorithm="extract an origin Location">
+An object implementing the {{Location}} interface's [$extract an origin$] operation runs the
+following steps:
+
+1.  If [=this=]'s <a dfn spec=HTML>relevant `Document`</a> is non-`null`, and its
+    [=Document/origin=] is not [=same origin-domain=] with the
+    <a dfn spec=HTML>entry settings object</a>'s [=environment settings object/origin=], then
+    return `null`.
+
+2.  Return [=this=]'s `url`'s [=url/origin=].
+
+Note: As `Location` is potentially accessible cross-origin, we need to maintain its getters'
+security checks here.
+
+</div><!-- Location -->
+
+
+### `WindowOrWorkerGlobalScope` ### {#extraction-WindowOrWorkerGlobalScope}
+
+<div algorithm="extract an origin WindowOrWorkerGlobalScope">
+An object implementing the {{WindowOrWorkerGlobalScope}} mixin's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
+
+</div><!-- WindowOrWorkerGlobalScope -->
+
+
+### `WorkerLocation` ### {#extraction-WorkerLocation}
+
+<div algorithm="extract an origin WorkerLocation">
+An object implementing the {{WorkerLocation}} interface's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s `WorkerGlobalScope`'s `url`'s `origin`.
+
+</div><!-- WorkerLocation -->
+
+
+### `MessageEvent` ### {#extraction-MessageEvent}
+
+<div algorithm="extract an origin MessageEvent">
+An object implementing the {{MessageEvent}} mixin's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
+
+</div><!-- MessageEvent -->
+
+
+### `String` ### {#extraction-String}
+
+<div algorithm="extract an origin String">
+A {{String}} |serializedURL|'s [$extract an origin$] operation runs the following steps:
+
+1.  Let |parsed url| be the result of running the [=basic URL parser=] on |serializedURL|.
+
+2.  If |parsed url| is failure, return `null`.
+
+3.  Let |origin| be a new {{Origin}} object.
+
+4.  Set |origin|'s {{Origin/[[origin]]}} to |parsed url|'s [=url/origin=].
+
+Note: Unlike {{URL/parse(url)|URL.parse}}, this method does not accept a base, but expects the
+complete serialization of a URL. That seems clearer, and guides developers towards constructing
+a {{URL}} object in some well-understood way that's distinct from their work with {{Origin}}.
+</div><!-- String -->
 
 
 Security Considerations {#security}
