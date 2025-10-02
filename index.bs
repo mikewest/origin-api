@@ -132,6 +132,17 @@ runs the following steps:
 
 ### `ExtendableMessageEvent` ### {#extraction-ExtendableMessageEvent}
 
+<div algorithm="extract an origin ExtendableMessageEvent">
+An object implementing the {{ExtendableMessageEvent}} interface's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s {{ExtendableMessageEvent/origin}}.
+
+    ISSUE: This doesn't actually work, as `ExtendableMessageEvent` holds a serialized origin,
+    not an origin. We'll need to adjust step 6.2.2 of {{ServiceWorker}}'s
+    {{ServiceWorker/postMessage(message, options)}} accordingly.
+
+</div><!-- ExtendableMessageEvent -->
 
 ### `HTMLHyperlinkElementUtils` ### {#extraction-HTMLHyperlinkElementUtils}
 
@@ -197,14 +208,10 @@ runs the following steps:
 ### `MessageEvent` ### {#extraction-MessageEvent}
 
 <div algorithm="extract an origin MessageEvent">
-An object implementing the {{MessageEvent}} mixin's [$extract an origin$] operation
+An object implementing the {{MessageEvent}} interface's [$extract an origin$] operation
 runs the following steps:
 
-1.  Return [=this=]'s {{ExtendableMessageEvent/origin}}.
-
-    ISSUE: This doesn't actually work, as `ExtendableMessageEvent` holds a serialized origin,
-    not an origin. We'll need to adjust step 6.2.2 of {{ServiceWorker}}'s
-    {{ServiceWorker/postMessage(message, options)}} accordingly.
+1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
 
 </div><!-- MessageEvent -->
 
