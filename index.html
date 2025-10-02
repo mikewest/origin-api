@@ -8,7 +8,7 @@
   <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://mikewest.github.io/origin-api" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="d5f968dcb6e119e16add4856e830357284e36eec" name="revision">
+  <meta content="a8c62ea979cf1fe64c1eb4dc3bb0b923670f6466" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="p-name no-ref" id="title">The Origin API</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#UD">Unofficial Proposal Draft</a>,
-    <time class="dt-updated" datetime="2025-10-01">1 October 2025</time></p>
+    <time class="dt-updated" datetime="2025-10-02">2 October 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -782,11 +782,14 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
       <li>
        <a href="#extraction"><span class="secno">2.1</span> <span class="content">Origin Extraction</span></a>
        <ol class="toc">
-        <li><a href="#extraction-HTMLHyperlinkElementUtils"><span class="secno">2.1.1</span> <span class="content"><code>HTMLHyperlinkElementUtils</code></span></a>
-        <li><a href="#extraction-Location"><span class="secno">2.1.2</span> <span class="content"><code>Location</code></span></a>
-        <li><a href="#extraction-WindowOrWorkerGlobalScope"><span class="secno">2.1.3</span> <span class="content"><code>WindowOrWorkerGlobalScope</code></span></a>
-        <li><a href="#extraction-WorkerLocation"><span class="secno">2.1.4</span> <span class="content"><code>WorkerLocation</code></span></a>
-        <li><a href="#extraction-MessageEvent"><span class="secno">2.1.5</span> <span class="content"><code>MessageEvent</code></span></a>
+        <li><a href="#extraction-URL"><span class="secno">2.1.1</span> <span class="content"><code>URL</code></span></a>
+        <li><a href="#extraction-Origin"><span class="secno">2.1.2</span> <span class="content"><code>Origin</code></span></a>
+        <li><a href="#extraction-ExtendableMessageEvent"><span class="secno">2.1.3</span> <span class="content"><code>ExtendableMessageEvent</code></span></a>
+        <li><a href="#extraction-HTMLHyperlinkElementUtils"><span class="secno">2.1.4</span> <span class="content"><code>HTMLHyperlinkElementUtils</code></span></a>
+        <li><a href="#extraction-Location"><span class="secno">2.1.5</span> <span class="content"><code>Location</code></span></a>
+        <li><a href="#extraction-WindowOrWorkerGlobalScope"><span class="secno">2.1.6</span> <span class="content"><code>WindowOrWorkerGlobalScope</code></span></a>
+        <li><a href="#extraction-WorkerLocation"><span class="secno">2.1.7</span> <span class="content"><code>WorkerLocation</code></span></a>
+        <li><a href="#extraction-MessageEvent"><span class="secno">2.1.8</span> <span class="content"><code>MessageEvent</code></span></a>
        </ol>
      </ol>
     <li><a href="#security"><span class="secno">3</span> <span class="content">Security Considerations</span></a>
@@ -896,81 +899,109 @@ if <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-f
    <h3 class="heading settled" data-level="2.1" id="extraction"><span class="secno">2.1. </span><span class="content">Origin Extraction</span><a class="self-link" href="#extraction"></a></h3>
    <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-platform-object" id="ref-for-dfn-platform-object①">Platform objects</a> have an <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-extract-an-origin">extract an origin</dfn> operation which returns
 <code>null</code> unless otherwise specified.</p>
-   <p class="issue" id="issue-a05344db"><a class="self-link" href="#issue-a05344db"></a> The following implementations should be colocated with their
-definitions in HTML. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a></p>
-   <h4 class="heading settled" data-level="2.1.1" id="extraction-HTMLHyperlinkElementUtils"><span class="secno">2.1.1. </span><span class="content"><code>HTMLHyperlinkElementUtils</code></span><a class="self-link" href="#extraction-HTMLHyperlinkElementUtils"></a></h4>
-   <div class="algorithm" data-algorithm="extract an origin HTMLHyperlinkElementUtils">
+   <p class="issue" id="issue-26bc2c10"><a class="self-link" href="#issue-26bc2c10"></a> The following implementations should be colocated with their
+definitions in HTML and elsewhere. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a></p>
+   <h4 class="heading settled" data-level="2.1.1" id="extraction-URL"><span class="secno">2.1.1. </span><span class="content"><code>URL</code></span><a class="self-link" href="#extraction-URL"></a></h4>
+   <div class="algorithm" data-algorithm="extract an origin URL">
     
-An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils" id="ref-for-htmlhyperlinkelementutils">HTMLHyperlinkElementUtils</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin①">extract an origin</a> operation
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://url.spec.whatwg.org/#url" id="ref-for-url①">URL</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin①">extract an origin</a> operation
 runs the following steps:
 
 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>’s <code>url</code> is <code>null</code>, return <code>null</code>.</p>
-     <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>’s <code>url</code>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①">origin</a>.</p>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①">origin</a>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="2.1.2" id="extraction-Location"><span class="secno">2.1.2. </span><span class="content"><code>Location</code></span><a class="self-link" href="#extraction-Location"></a></h4>
+   <h4 class="heading settled" data-level="2.1.2" id="extraction-Origin"><span class="secno">2.1.2. </span><span class="content"><code>Origin</code></span><a class="self-link" href="#extraction-Origin"></a></h4>
+   <div class="algorithm" data-algorithm="extract an origin Origin">
+    
+An object implementing the <code class="idl"><a data-link-type="idl" href="#origin" id="ref-for-origin⑦">Origin</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin②">extract an origin</a> operation
+runs the following steps:
+
+
+    <ol>
+     <li data-md>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>’s <code class="idl"><a data-link-type="idl" href="#dom-origin-origin-slot" id="ref-for-dom-origin-origin-slot⑧">[[origin]]</a></code>.</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="2.1.3" id="extraction-ExtendableMessageEvent"><span class="secno">2.1.3. </span><span class="content"><code>ExtendableMessageEvent</code></span><a class="self-link" href="#extraction-ExtendableMessageEvent"></a></h4>
+   <h4 class="heading settled" data-level="2.1.4" id="extraction-HTMLHyperlinkElementUtils"><span class="secno">2.1.4. </span><span class="content"><code>HTMLHyperlinkElementUtils</code></span><a class="self-link" href="#extraction-HTMLHyperlinkElementUtils"></a></h4>
+   <div class="algorithm" data-algorithm="extract an origin HTMLHyperlinkElementUtils">
+    
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils" id="ref-for-htmlhyperlinkelementutils">HTMLHyperlinkElementUtils</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin③">extract an origin</a> operation
+runs the following steps:
+
+
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>’s <code>url</code> is <code>null</code>, return <code>null</code>.</p>
+     <li data-md>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>’s <code>url</code>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin②">origin</a>.</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="2.1.5" id="extraction-Location"><span class="secno">2.1.5. </span><span class="content"><code>Location</code></span><a class="self-link" href="#extraction-Location"></a></h4>
    <div class="algorithm" data-algorithm="extract an origin Location">
     
-An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#location" id="ref-for-location">Location</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin②">extract an origin</a> operation runs the
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#location" id="ref-for-location">Location</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin④">extract an origin</a> operation runs the
 following steps:
 
 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#relevant-document" id="ref-for-relevant-document">relevant <code>Document</code></a> is non-<code>null</code>, and its
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#relevant-document" id="ref-for-relevant-document">relevant <code>Document</code></a> is non-<code>null</code>, and its
 <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin-domain" id="ref-for-same-origin-domain">same origin-domain</a> with the
 <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#entry-settings-object" id="ref-for-entry-settings-object">entry settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>, then
 return <code>null</code>.</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>’s <code>url</code>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin②">origin</a>.</p>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>’s <code>url</code>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin③">origin</a>.</p>
     </ol>
     <p class="note" role="note"><span class="marker">Note:</span> As <code>Location</code> is potentially accessible cross-origin, we need to maintain its getters'
 security checks here.</p>
    </div>
-   <h4 class="heading settled" data-level="2.1.3" id="extraction-WindowOrWorkerGlobalScope"><span class="secno">2.1.3. </span><span class="content"><code>WindowOrWorkerGlobalScope</code></span><a class="self-link" href="#extraction-WindowOrWorkerGlobalScope"></a></h4>
+   <h4 class="heading settled" data-level="2.1.6" id="extraction-WindowOrWorkerGlobalScope"><span class="secno">2.1.6. </span><span class="content"><code>WindowOrWorkerGlobalScope</code></span><a class="self-link" href="#extraction-WindowOrWorkerGlobalScope"></a></h4>
    <div class="algorithm" data-algorithm="extract an origin WindowOrWorkerGlobalScope">
     
-An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin③">extract an origin</a> operation
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin⑤">extract an origin</a> operation
 runs the following steps:
 
 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin①">origin</a> is not
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin①">origin</a> is not
  <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin-domain" id="ref-for-same-origin-domain①">same origin-domain</a> with the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#entry-settings-object" id="ref-for-entry-settings-object①">entry settings object</a>’s
  <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin②">origin</a>, then return <code>null</code>.</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①">relevant settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin③">origin</a>.</p>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①">relevant settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin③">origin</a>.</p>
     </ol>
     <p class="note" role="note"><span class="marker">Note:</span> As <code>WindowProxy</code> objects are potentially accessible cross-origin, we need to perform a
 security check here before granting access to the global scope’s <code>origin</code>.</p>
    </div>
-   <h4 class="heading settled" data-level="2.1.4" id="extraction-WorkerLocation"><span class="secno">2.1.4. </span><span class="content"><code>WorkerLocation</code></span><a class="self-link" href="#extraction-WorkerLocation"></a></h4>
+   <h4 class="heading settled" data-level="2.1.7" id="extraction-WorkerLocation"><span class="secno">2.1.7. </span><span class="content"><code>WorkerLocation</code></span><a class="self-link" href="#extraction-WorkerLocation"></a></h4>
    <div class="algorithm" data-algorithm="extract an origin WorkerLocation">
     
-An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#workerlocation" id="ref-for-workerlocation">WorkerLocation</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin④">extract an origin</a> operation
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#workerlocation" id="ref-for-workerlocation">WorkerLocation</a></code> interface’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin⑥">extract an origin</a> operation
 runs the following steps:
 
 
     <ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>’s <code>WorkerGlobalScope</code>’s <code>url</code>’s <code>origin</code>.</p>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>’s <code>WorkerGlobalScope</code>’s <code>url</code>’s <code>origin</code>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="2.1.5" id="extraction-MessageEvent"><span class="secno">2.1.5. </span><span class="content"><code>MessageEvent</code></span><a class="self-link" href="#extraction-MessageEvent"></a></h4>
+   <h4 class="heading settled" data-level="2.1.8" id="extraction-MessageEvent"><span class="secno">2.1.8. </span><span class="content"><code>MessageEvent</code></span><a class="self-link" href="#extraction-MessageEvent"></a></h4>
    <div class="algorithm" data-algorithm="extract an origin MessageEvent">
     
-An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/comms.html#messageevent" id="ref-for-messageevent">MessageEvent</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin⑤">extract an origin</a> operation
+An object implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/comms.html#messageevent" id="ref-for-messageevent">MessageEvent</a></code> mixin’s <a data-link-type="abstract-op" href="#abstract-opdef-extract-an-origin" id="ref-for-abstract-opdef-extract-an-origin⑦">extract an origin</a> operation
 runs the following steps:
 
 
     <ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin④">origin</a>.</p>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①③">this</a>’s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#dom-extendablemessageevent-origin" id="ref-for-dom-extendablemessageevent-origin">origin</a></code>.</p>
+      <p class="issue" id="issue-70840bca"><a class="self-link" href="#issue-70840bca"></a> This doesn’t actually work, as <code>ExtendableMessageEvent</code> holds a serialized origin,
+not an origin. We’ll need to adjust step 6.2.2 of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#serviceworker" id="ref-for-serviceworker">ServiceWorker</a></code>’s
+<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage-message-options" id="ref-for-dom-serviceworker-postmessage-message-options">postMessage(message, options)</a></code> accordingly.</p>
     </ol>
    </div>
    <h2 class="heading settled" data-level="3" id="security"><span class="secno">3. </span><span class="content">Security Considerations</span><a class="self-link" href="#security"></a></h2>
@@ -1072,6 +1103,13 @@ version’s visibility.</p>
      <li><span class="dfn-paneled" id="0698d556">string</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[SERVICE-WORKERS]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="1968aaab">ServiceWorker</span>
+     <li><span class="dfn-paneled" id="0b84b79a">origin</span>
+     <li><span class="dfn-paneled" id="fcba80ff">postMessage(message, options)</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="f06432d7">URL</span>
@@ -1100,6 +1138,8 @@ version’s visibility.</p>
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-service-workers">[SERVICE-WORKERS]
+   <dd>Yoshisato Yanagisawa; Monica CHINTALA. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-webidl">[WEBIDL]
@@ -1128,7 +1168,10 @@ version’s visibility.</p>
   <div style="counter-reset:issue">
    <div class="issue"> This section is probably best read as a patch to HTML, adding a new subsection to <a href="https://html.spec.whatwg.org/multipage/browsers.html#origin">7.1.1 Origins</a>. If there’s support for the idea, we should turn it into a PR rather than a standalone document. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a> <a class="issue-return" href="#issue-fad2761c" title="Jump to section">↵</a></div>
    <div class="issue"> The following implementations should be colocated with their
-definitions in HTML. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a> <a class="issue-return" href="#issue-a05344db" title="Jump to section">↵</a></div>
+definitions in HTML and elsewhere. <a href="https://github.com/whatwg/html/issues/11534">[whatwg/html Issue #11534]</a> <a class="issue-return" href="#issue-26bc2c10" title="Jump to section">↵</a></div>
+   <div class="issue"> This doesn’t actually work, as <code>ExtendableMessageEvent</code> holds a serialized origin,
+not an origin. We’ll need to adjust step 6.2.2 of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#serviceworker">ServiceWorker</a></code>’s
+<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage-message-options">postMessage(message, options)</a></code> accordingly. <a class="issue-return" href="#issue-70840bca" title="Jump to section">↵</a></div>
   </div>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
@@ -1333,27 +1376,29 @@ let dfnPanelData = {
 "0698d556": {"dfnID":"0698d556","dfnText":"string","external":true,"refSections":[{"refs":[{"id":"ref-for-string"}],"title":"2. The Origin Object"}],"url":"https://infra.spec.whatwg.org/#string"},
 "0757a962": {"dfnID":"0757a962","dfnText":"schemelessly same site","external":true,"refSections":[{"refs":[{"id":"ref-for-schemelessly-same-site"}],"title":"2. The Origin Object"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#schemelessly-same-site"},
 "086e3aff": {"dfnID":"086e3aff","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-concept-origin\u2460"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-concept-origin\u2461"}],"title":"3. Security Considerations"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
-"154d8845": {"dfnID":"154d8845","dfnText":"HTMLHyperlinkElementUtils","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlhyperlinkelementutils"}],"title":"2.1.1. HTMLHyperlinkElementUtils"}],"url":"https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils"},
-"3e8c0e5f": {"dfnID":"3e8c0e5f","dfnText":"MessageEvent","external":true,"refSections":[{"refs":[{"id":"ref-for-messageevent"}],"title":"2.1.5. MessageEvent"}],"url":"https://html.spec.whatwg.org/multipage/comms.html#messageevent"},
-"4013a022": {"dfnID":"4013a022","dfnText":"this","external":true,"refSections":[{"refs":[{"id":"ref-for-this"},{"id":"ref-for-this\u2460"},{"id":"ref-for-this\u2461"},{"id":"ref-for-this\u2462"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-this\u2463"},{"id":"ref-for-this\u2464"}],"title":"2.1.1. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-this\u2465"},{"id":"ref-for-this\u2466"}],"title":"2.1.2. Location"},{"refs":[{"id":"ref-for-this\u2467"},{"id":"ref-for-this\u2468"}],"title":"2.1.3. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-this\u2460\u24ea"}],"title":"2.1.4. WorkerLocation"},{"refs":[{"id":"ref-for-this\u2460\u2460"}],"title":"2.1.5. MessageEvent"}],"url":"https://webidl.spec.whatwg.org/#this"},
-"43ac8374": {"dfnID":"43ac8374","dfnText":"origin (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-origin"}],"title":"2.1.2. Location"},{"refs":[{"id":"ref-for-concept-settings-object-origin\u2460"},{"id":"ref-for-concept-settings-object-origin\u2461"},{"id":"ref-for-concept-settings-object-origin\u2462"}],"title":"2.1.3. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-concept-settings-object-origin\u2463"}],"title":"2.1.5. MessageEvent"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin"},
-"521818b9": {"dfnID":"521818b9","dfnText":"same origin-domain","external":true,"refSections":[{"refs":[{"id":"ref-for-same-origin-domain"}],"title":"2.1.2. Location"},{"refs":[{"id":"ref-for-same-origin-domain\u2460"}],"title":"2.1.3. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin-domain"},
+"0b84b79a": {"dfnID":"0b84b79a","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-extendablemessageevent-origin"}],"title":"2.1.8. MessageEvent"}],"url":"https://w3c.github.io/ServiceWorker/#dom-extendablemessageevent-origin"},
+"154d8845": {"dfnID":"154d8845","dfnText":"HTMLHyperlinkElementUtils","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlhyperlinkelementutils"}],"title":"2.1.4. HTMLHyperlinkElementUtils"}],"url":"https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils"},
+"1968aaab": {"dfnID":"1968aaab","dfnText":"ServiceWorker","external":true,"refSections":[{"refs":[{"id":"ref-for-serviceworker"}],"title":"2.1.8. MessageEvent"}],"url":"https://w3c.github.io/ServiceWorker/#serviceworker"},
+"3e8c0e5f": {"dfnID":"3e8c0e5f","dfnText":"MessageEvent","external":true,"refSections":[{"refs":[{"id":"ref-for-messageevent"}],"title":"2.1.8. MessageEvent"}],"url":"https://html.spec.whatwg.org/multipage/comms.html#messageevent"},
+"4013a022": {"dfnID":"4013a022","dfnText":"this","external":true,"refSections":[{"refs":[{"id":"ref-for-this"},{"id":"ref-for-this\u2460"},{"id":"ref-for-this\u2461"},{"id":"ref-for-this\u2462"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-this\u2463"}],"title":"2.1.1. URL"},{"refs":[{"id":"ref-for-this\u2464"}],"title":"2.1.2. Origin"},{"refs":[{"id":"ref-for-this\u2465"},{"id":"ref-for-this\u2466"}],"title":"2.1.4. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-this\u2467"},{"id":"ref-for-this\u2468"}],"title":"2.1.5. Location"},{"refs":[{"id":"ref-for-this\u2460\u24ea"},{"id":"ref-for-this\u2460\u2460"}],"title":"2.1.6. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-this\u2460\u2461"}],"title":"2.1.7. WorkerLocation"},{"refs":[{"id":"ref-for-this\u2460\u2462"}],"title":"2.1.8. MessageEvent"}],"url":"https://webidl.spec.whatwg.org/#this"},
+"43ac8374": {"dfnID":"43ac8374","dfnText":"origin (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-origin"}],"title":"2.1.5. Location"},{"refs":[{"id":"ref-for-concept-settings-object-origin\u2460"},{"id":"ref-for-concept-settings-object-origin\u2461"},{"id":"ref-for-concept-settings-object-origin\u2462"}],"title":"2.1.6. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin"},
+"521818b9": {"dfnID":"521818b9","dfnText":"same origin-domain","external":true,"refSections":[{"refs":[{"id":"ref-for-same-origin-domain"}],"title":"2.1.5. Location"},{"refs":[{"id":"ref-for-same-origin-domain\u2460"}],"title":"2.1.6. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin-domain"},
 "5372cca8": {"dfnID":"5372cca8","dfnText":"boolean","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-boolean"},{"id":"ref-for-idl-boolean\u2460"},{"id":"ref-for-idl-boolean\u2461"}],"title":"2. The Origin Object"}],"url":"https://webidl.spec.whatwg.org/#idl-boolean"},
-"5f6d392d": {"dfnID":"5f6d392d","dfnText":"WindowOrWorkerGlobalScope","external":true,"refSections":[{"refs":[{"id":"ref-for-windoworworkerglobalscope"}],"title":"2.1.3. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"},
+"5f6d392d": {"dfnID":"5f6d392d","dfnText":"WindowOrWorkerGlobalScope","external":true,"refSections":[{"refs":[{"id":"ref-for-windoworworkerglobalscope"}],"title":"2.1.6. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"},
 "6728fdee": {"dfnID":"6728fdee","dfnText":"platform object","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-platform-object"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dfn-platform-object\u2460"}],"title":"2.1. Origin Extraction"}],"url":"https://webidl.spec.whatwg.org/#dfn-platform-object"},
 "6c6b1005": {"dfnID":"6c6b1005","dfnText":"any","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-any"}],"title":"2. The Origin Object"}],"url":"https://webidl.spec.whatwg.org/#idl-any"},
 "7393da89": {"dfnID":"7393da89","dfnText":"same origin","external":true,"refSections":[{"refs":[{"id":"ref-for-same-origin"}],"title":"2. The Origin Object"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin"},
 "82ca3efc": {"dfnID":"82ca3efc","dfnText":"TypeError","external":true,"refSections":[{"refs":[{"id":"ref-for-exceptiondef-typeerror"}],"title":"2. The Origin Object"}],"url":"https://webidl.spec.whatwg.org/#exceptiondef-typeerror"},
-"959ad97b": {"dfnID":"959ad97b","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-origin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-concept-url-origin\u2460"}],"title":"2.1.1. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-concept-url-origin\u2461"}],"title":"2.1.2. Location"}],"url":"https://url.spec.whatwg.org/#concept-url-origin"},
-"9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"},{"id":"ref-for-relevant-settings-object\u2460"}],"title":"2.1.3. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-relevant-settings-object\u2461"}],"title":"2.1.5. MessageEvent"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"959ad97b": {"dfnID":"959ad97b","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-origin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-concept-url-origin\u2460"}],"title":"2.1.1. URL"},{"refs":[{"id":"ref-for-concept-url-origin\u2461"}],"title":"2.1.4. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-concept-url-origin\u2462"}],"title":"2.1.5. Location"}],"url":"https://url.spec.whatwg.org/#concept-url-origin"},
+"9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"},{"id":"ref-for-relevant-settings-object\u2460"}],"title":"2.1.6. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
 "9ed8b710": {"dfnID":"9ed8b710","dfnText":"basic URL parser","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-basic-url-parser"}],"title":"2. The Origin Object"}],"url":"https://url.spec.whatwg.org/#concept-basic-url-parser"},
-"abstract-opdef-extract-an-origin": {"dfnID":"abstract-opdef-extract-an-origin","dfnText":"extract an origin","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2460"}],"title":"2.1.1. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2461"}],"title":"2.1.2. Location"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2462"}],"title":"2.1.3. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2463"}],"title":"2.1.4. WorkerLocation"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2464"}],"title":"2.1.5. MessageEvent"}],"url":"#abstract-opdef-extract-an-origin"},
+"abstract-opdef-extract-an-origin": {"dfnID":"abstract-opdef-extract-an-origin","dfnText":"extract an origin","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2460"}],"title":"2.1.1. URL"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2461"}],"title":"2.1.2. Origin"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2462"}],"title":"2.1.4. HTMLHyperlinkElementUtils"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2463"}],"title":"2.1.5. Location"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2464"}],"title":"2.1.6. WindowOrWorkerGlobalScope"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2465"}],"title":"2.1.7. WorkerLocation"},{"refs":[{"id":"ref-for-abstract-opdef-extract-an-origin\u2466"}],"title":"2.1.8. MessageEvent"}],"url":"#abstract-opdef-extract-an-origin"},
 "b01b1359": {"dfnID":"b01b1359","dfnText":"opaque origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin-opaque"},{"id":"ref-for-concept-origin-opaque\u2460"}],"title":"2. The Origin Object"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
-"b405048b": {"dfnID":"b405048b","dfnText":"relevant Document","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-document"}],"title":"2.1.2. Location"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#relevant-document"},
+"b405048b": {"dfnID":"b405048b","dfnText":"relevant Document","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-document"}],"title":"2.1.5. Location"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#relevant-document"},
 "b410a6ef": {"dfnID":"b410a6ef","dfnText":"ASCII serialization of an origin","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-serialisation-of-an-origin"}],"title":"1. Introduction"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#ascii-serialisation-of-an-origin"},
-"c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"}],"title":"2.1.2. Location"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
-"cc549724": {"dfnID":"cc549724","dfnText":"Location","external":true,"refSections":[{"refs":[{"id":"ref-for-location"}],"title":"2.1.2. Location"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#location"},
-"d9aeb25e": {"dfnID":"d9aeb25e","dfnText":"entry settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-entry-settings-object"}],"title":"2.1.2. Location"},{"refs":[{"id":"ref-for-entry-settings-object\u2460"}],"title":"2.1.3. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#entry-settings-object"},
+"c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"}],"title":"2.1.5. Location"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
+"cc549724": {"dfnID":"cc549724","dfnText":"Location","external":true,"refSections":[{"refs":[{"id":"ref-for-location"}],"title":"2.1.5. Location"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#location"},
+"d9aeb25e": {"dfnID":"d9aeb25e","dfnText":"entry settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-entry-settings-object"}],"title":"2.1.5. Location"},{"refs":[{"id":"ref-for-entry-settings-object\u2460"}],"title":"2.1.6. WindowOrWorkerGlobalScope"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#entry-settings-object"},
 "dom-origin-from": {"dfnID":"dom-origin-from","dfnText":"from(value)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-from"}],"title":"2. The Origin Object"}],"url":"#dom-origin-from"},
 "dom-origin-from-value-value": {"dfnID":"dom-origin-from-value-value","dfnText":"value","external":false,"refSections":[],"url":"#dom-origin-from-value-value"},
 "dom-origin-issameorigin": {"dfnID":"dom-origin-issameorigin","dfnText":"isSameOrigin(other)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-issameorigin"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dom-origin-issameorigin\u2460"}],"title":"3. Security Considerations"}],"url":"#dom-origin-issameorigin"},
@@ -1362,13 +1407,14 @@ let dfnPanelData = {
 "dom-origin-issamesite-other-other": {"dfnID":"dom-origin-issamesite-other-other","dfnText":"other","external":false,"refSections":[],"url":"#dom-origin-issamesite-other-other"},
 "dom-origin-opaque": {"dfnID":"dom-origin-opaque","dfnText":"opaque","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-opaque"}],"title":"2. The Origin Object"}],"url":"#dom-origin-opaque"},
 "dom-origin-origin": {"dfnID":"dom-origin-origin","dfnText":"new Origin()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-origin"}],"title":"2. The Origin Object"}],"url":"#dom-origin-origin"},
-"dom-origin-origin-slot": {"dfnID":"dom-origin-origin-slot","dfnText":"[[origin]]","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-origin-slot"},{"id":"ref-for-dom-origin-origin-slot\u2460"},{"id":"ref-for-dom-origin-origin-slot\u2461"},{"id":"ref-for-dom-origin-origin-slot\u2462"},{"id":"ref-for-dom-origin-origin-slot\u2463"},{"id":"ref-for-dom-origin-origin-slot\u2464"},{"id":"ref-for-dom-origin-origin-slot\u2465"},{"id":"ref-for-dom-origin-origin-slot\u2466"}],"title":"2. The Origin Object"}],"url":"#dom-origin-origin-slot"},
+"dom-origin-origin-slot": {"dfnID":"dom-origin-origin-slot","dfnText":"[[origin]]","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-origin-origin-slot"},{"id":"ref-for-dom-origin-origin-slot\u2460"},{"id":"ref-for-dom-origin-origin-slot\u2461"},{"id":"ref-for-dom-origin-origin-slot\u2462"},{"id":"ref-for-dom-origin-origin-slot\u2463"},{"id":"ref-for-dom-origin-origin-slot\u2464"},{"id":"ref-for-dom-origin-origin-slot\u2465"},{"id":"ref-for-dom-origin-origin-slot\u2466"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-dom-origin-origin-slot\u2467"}],"title":"2.1.2. Origin"}],"url":"#dom-origin-origin-slot"},
 "e63de72b": {"dfnID":"e63de72b","dfnText":"parse(url)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-url-parse"}],"title":"2. The Origin Object"}],"url":"https://url.spec.whatwg.org/#dom-url-parse"},
-"e9ac3051": {"dfnID":"e9ac3051","dfnText":"WorkerLocation","external":true,"refSections":[{"refs":[{"id":"ref-for-workerlocation"}],"title":"2.1.4. WorkerLocation"}],"url":"https://html.spec.whatwg.org/multipage/workers.html#workerlocation"},
-"f06432d7": {"dfnID":"f06432d7","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-url"}],"title":"2. The Origin Object"}],"url":"https://url.spec.whatwg.org/#url"},
+"e9ac3051": {"dfnID":"e9ac3051","dfnText":"WorkerLocation","external":true,"refSections":[{"refs":[{"id":"ref-for-workerlocation"}],"title":"2.1.7. WorkerLocation"}],"url":"https://html.spec.whatwg.org/multipage/workers.html#workerlocation"},
+"f06432d7": {"dfnID":"f06432d7","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-url"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-url\u2460"}],"title":"2.1.1. URL"}],"url":"https://url.spec.whatwg.org/#url"},
 "fb9bb722": {"dfnID":"fb9bb722","dfnText":"site","external":true,"refSections":[{"refs":[{"id":"ref-for-site"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-site\u2460"},{"id":"ref-for-site\u2461"},{"id":"ref-for-site\u2462"}],"title":"3. Security Considerations"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#site"},
+"fcba80ff": {"dfnID":"fcba80ff","dfnText":"postMessage(message, options)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serviceworker-postmessage-message-options"}],"title":"2.1.8. MessageEvent"}],"url":"https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage-message-options"},
 "feac4ab3": {"dfnID":"feac4ab3","dfnText":"same site","external":true,"refSections":[{"refs":[{"id":"ref-for-same-site"},{"id":"ref-for-same-site\u2460"}],"title":"2. The Origin Object"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-site"},
-"origin": {"dfnID":"origin","dfnText":"Origin","external":false,"refSections":[{"refs":[{"id":"ref-for-origin"},{"id":"ref-for-origin\u2460"},{"id":"ref-for-origin\u2461"},{"id":"ref-for-origin\u2462"},{"id":"ref-for-origin\u2463"},{"id":"ref-for-origin\u2464"},{"id":"ref-for-origin\u2465"}],"title":"2. The Origin Object"}],"url":"#origin"},
+"origin": {"dfnID":"origin","dfnText":"Origin","external":false,"refSections":[{"refs":[{"id":"ref-for-origin"},{"id":"ref-for-origin\u2460"},{"id":"ref-for-origin\u2461"},{"id":"ref-for-origin\u2462"},{"id":"ref-for-origin\u2463"},{"id":"ref-for-origin\u2464"},{"id":"ref-for-origin\u2465"}],"title":"2. The Origin Object"},{"refs":[{"id":"ref-for-origin\u2466"}],"title":"2.1.2. Origin"}],"url":"#origin"},
 };
 
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -1788,6 +1834,9 @@ let refsData = {
 "https://url.spec.whatwg.org/#concept-url-origin": {"displayText":"origin","export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"origin","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-origin"},
 "https://url.spec.whatwg.org/#dom-url-parse": {"displayText":"parse(url)","export":true,"for_":["URL"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"parse(url)","type":"method","url":"https://url.spec.whatwg.org/#dom-url-parse"},
 "https://url.spec.whatwg.org/#url": {"displayText":"URL","export":true,"for_":[],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"URL","type":"interface","url":"https://url.spec.whatwg.org/#url"},
+"https://w3c.github.io/ServiceWorker/#dom-extendablemessageevent-origin": {"displayText":"origin","export":true,"for_":["ExtendableMessageEvent"],"level":"1","normative":true,"shortname":"service-workers","spec":"service-workers","status":"current","text":"origin","type":"attribute","url":"https://w3c.github.io/ServiceWorker/#dom-extendablemessageevent-origin"},
+"https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage-message-options": {"displayText":"postMessage(message, options)","export":true,"for_":["ServiceWorker"],"level":"1","normative":true,"shortname":"service-workers","spec":"service-workers","status":"current","text":"postMessage(message, options)","type":"method","url":"https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage-message-options"},
+"https://w3c.github.io/ServiceWorker/#serviceworker": {"displayText":"ServiceWorker","export":true,"for_":[],"level":"1","normative":true,"shortname":"service-workers","spec":"service-workers","status":"current","text":"ServiceWorker","type":"interface","url":"https://w3c.github.io/ServiceWorker/#serviceworker"},
 "https://webidl.spec.whatwg.org/#dfn-platform-object": {"displayText":"platform object","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"platform object","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-platform-object"},
 "https://webidl.spec.whatwg.org/#exceptiondef-typeerror": {"displayText":"TypeError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"TypeError","type":"exception","url":"https://webidl.spec.whatwg.org/#exceptiondef-typeerror"},
 "https://webidl.spec.whatwg.org/#idl-any": {"displayText":"any","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"any","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-any"},
