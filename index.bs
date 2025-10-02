@@ -107,7 +107,30 @@ Origin Extraction {#extraction}
 `null` unless otherwise specified.
 
 ISSUE(whatwg/html#11534): The following implementations should be colocated with their
-definitions in HTML.
+definitions in HTML and elsewhere.
+
+### `URL` ### {#extraction-URL}
+
+<div algorithm="extract an origin URL">
+An object implementing the {{URL}} interface's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s [=url/origin=].
+
+</div><!-- URL -->
+
+### `Origin` ### {#extraction-Origin}
+
+<div algorithm="extract an origin Origin">
+An object implementing the {{Origin}} interface's [$extract an origin$] operation
+runs the following steps:
+
+1.  Return [=this=]'s {{Origin/[[origin]]}}.
+
+</div><!-- Origin -->
+
+
+### `ExtendableMessageEvent` ### {#extraction-ExtendableMessageEvent}
 
 
 ### `HTMLHyperlinkElementUtils` ### {#extraction-HTMLHyperlinkElementUtils}
@@ -177,7 +200,11 @@ runs the following steps:
 An object implementing the {{MessageEvent}} mixin's [$extract an origin$] operation
 runs the following steps:
 
-1.  Return [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=].
+1.  Return [=this=]'s {{ExtendableMessageEvent/origin}}.
+
+    ISSUE: This doesn't actually work, as `ExtendableMessageEvent` holds a serialized origin,
+    not an origin. We'll need to adjust step 6.2.2 of {{ServiceWorker}}'s
+    {{ServiceWorker/postMessage(message, options)}} accordingly.
 
 </div><!-- MessageEvent -->
 
