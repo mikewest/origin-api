@@ -10,6 +10,7 @@ Abstract: An `Origin` object might be nice to have.
 Markup Shorthands: markdown yes, css no
 Complain About: accidental-2119 yes, missing-example-ids yes
 Assume Explicit For: yes
+Warning: Replaced by https://html.spec.whatwg.org/multipage/browsers.html#the-origin-interface
 Die On: warning
 </pre>
 
