@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> This landed in HTML as https://html.spec.whatwg.org/multipage/browsers.html#the-origin-interface; so this repo is no longer necessary or helpful.
+
+---
+
 # An `Origin` API.
 _Mike West, July 2025_
 
